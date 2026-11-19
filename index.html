@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Churn scoring in R: a production build, measured</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preload" href="fonts/literata-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="masthead">
+  <div class="wrap masthead-in">
+    <p class="site-name">Churn scoring in R</p>
+    <p class="byline">Prepared by Santiago</p>
+  </div>
+</header>
+
+<main id="main" class="wrap">
+  <section class="hero" aria-labelledby="h-hero">
+    <h1 id="h-hero">One user scores a million rows. Does everyone else wait?</h1>
+    <p class="lede">R runs one task at a time in each process. In this Shiny app, with scoring done in the app's own process, a second user who clicked half a second into a 1,000,000-row job waited 7.1&nbsp;s for a reply. With scoring moved to background R workers, a click two seconds in waited 57&nbsp;ms. That's about as fast as an idle app (55&nbsp;ms).</p>
+    <figure class="chart">
+      <svg viewBox="0 0 1040 340" class="timeline tl-wide" role="img" aria-labelledby="tl-cap"><line x1="360.0" x2="360.0" y1="22" y2="314.0" class="tl-grid"/><line x1="524.0" x2="524.0" y1="22" y2="314.0" class="tl-grid"/><line x1="688.0" x2="688.0" y1="22" y2="314.0" class="tl-grid"/><line x1="852.0" x2="852.0" y1="22" y2="314.0" class="tl-grid"/><line x1="1016.0" x2="1016.0" y1="22" y2="314.0" class="tl-grid"/><text x="16.0" y="34.0" class="tl-title" text-anchor="start">Scoring in the app's own process</text><text x="16.0" y="69.0" class="tl-lab" text-anchor="start">User A, 1,000,000 rows</text><rect x="196.0" y="56.0" width="596.1" height="16" rx="3" class="tl-a"/><text x="798.1" y="68.5" class="tl-num" text-anchor="start">7.3 s</text><text x="16.0" y="96.5" class="tl-lab" text-anchor="start">User B clicks at 0.5 s</text><line x1="237.0" x2="237.0" y1="81.0" y2="103.0" class="tl-click"/><rect x="237.0" y="86.0" width="581.0" height="12" rx="2" class="tl-b"/><text x="824.0" y="96.5" class="tl-num" text-anchor="start">waits 7.1 s</text><text x="16.0" y="120.5" class="tl-lab" text-anchor="start">User B clicks at 2 s</text><line x1="360.0" x2="360.0" y1="105.0" y2="127.0" class="tl-click"/><rect x="360.0" y="110.0" width="419.5" height="12" rx="2" class="tl-b"/><text x="785.5" y="120.5" class="tl-num" text-anchor="start">waits 5.1 s</text><text x="16.0" y="144.5" class="tl-lab" text-anchor="start">User B clicks at 4 s</text><line x1="524.0" x2="524.0" y1="129.0" y2="151.0" class="tl-click"/><rect x="524.0" y="134.0" width="251.3" height="12" rx="2" class="tl-b"/><text x="781.3" y="144.5" class="tl-num" text-anchor="start">waits 3.1 s</text><text x="16.0" y="178.0" class="tl-title" text-anchor="start">Scoring in background R workers</text><text x="16.0" y="213.0" class="tl-lab" text-anchor="start">User A, 1,000,000 rows</text><rect x="196.0" y="200.0" width="762.6" height="16" rx="3" class="tl-a"/><text x="964.6" y="212.5" class="tl-num" text-anchor="start">9.3 s</text><text x="16.0" y="240.5" class="tl-lab" text-anchor="start">User B clicks at 0.5 s</text><line x1="237.0" x2="237.0" y1="225.0" y2="247.0" class="tl-click"/><rect x="237.0" y="230.0" width="87.5" height="12" rx="2" class="tl-b"/><text x="330.5" y="240.5" class="tl-num" text-anchor="start">waits 1.1 s</text><text x="16.0" y="264.5" class="tl-lab" text-anchor="start">User B clicks at 2 s</text><line x1="360.0" x2="360.0" y1="249.0" y2="271.0" class="tl-click"/><rect x="360.0" y="254.0" width="4.7" height="12" rx="2" class="tl-b"/><text x="372.7" y="264.5" class="tl-num" text-anchor="start">waits 57 ms</text><text x="16.0" y="288.5" class="tl-lab" text-anchor="start">User B clicks at 4 s</text><line x1="524.0" x2="524.0" y1="273.0" y2="295.0" class="tl-click"/><rect x="524.0" y="278.0" width="5.4" height="12" rx="2" class="tl-b"/><text x="537.4" y="288.5" class="tl-num" text-anchor="start">waits 66 ms</text><line x1="196.0" x2="1016.0" y1="314.0" y2="314.0" class="tl-axis"/><line x1="196.0" x2="196.0" y1="314.0" y2="319.0" class="tl-axis"/><text x="196.0" y="332.0" class="tl-tick" text-anchor="middle">0 s</text><line x1="360.0" x2="360.0" y1="314.0" y2="319.0" class="tl-axis"/><text x="360.0" y="332.0" class="tl-tick" text-anchor="middle">2 s</text><line x1="524.0" x2="524.0" y1="314.0" y2="319.0" class="tl-axis"/><text x="524.0" y="332.0" class="tl-tick" text-anchor="middle">4 s</text><line x1="688.0" x2="688.0" y1="314.0" y2="319.0" class="tl-axis"/><text x="688.0" y="332.0" class="tl-tick" text-anchor="middle">6 s</text><line x1="852.0" x2="852.0" y1="314.0" y2="319.0" class="tl-axis"/><text x="852.0" y="332.0" class="tl-tick" text-anchor="middle">8 s</text><line x1="1016.0" x2="1016.0" y1="314.0" y2="319.0" class="tl-axis"/><text x="1016.0" y="332.0" class="tl-tick" text-anchor="middle">10 s</text></svg><svg viewBox="0 0 360 484" class="timeline tl-narrow" role="img" aria-labelledby="tl-cap"><line x1="80.0" x2="80.0" y1="22" y2="458.0" class="tl-grid"/><line x1="144.0" x2="144.0" y1="22" y2="458.0" class="tl-grid"/><line x1="208.0" x2="208.0" y1="22" y2="458.0" class="tl-grid"/><line x1="272.0" x2="272.0" y1="22" y2="458.0" class="tl-grid"/><line x1="336.0" x2="336.0" y1="22" y2="458.0" class="tl-grid"/><text x="16.0" y="34.0" class="tl-title" text-anchor="start">Scoring in the app's own process</text><text x="16.0" y="67.0" class="tl-lab" text-anchor="start">User A scores 1,000,000 rows: 7.3 s</text><rect x="16.0" y="74.0" width="232.6" height="16" rx="3" class="tl-a"/><text x="16.0" y="113.0" class="tl-lab" text-anchor="start">User B clicks at 0.5 s, waits 7.1 s</text><line x1="32.0" x2="32.0" y1="117.0" y2="139.0" class="tl-click"/><rect x="32.0" y="122.0" width="226.7" height="12" rx="2" class="tl-b"/><text x="16.0" y="155.0" class="tl-lab" text-anchor="start">User B clicks at 2 s, waits 5.1 s</text><line x1="80.0" x2="80.0" y1="159.0" y2="181.0" class="tl-click"/><rect x="80.0" y="164.0" width="163.7" height="12" rx="2" class="tl-b"/><text x="16.0" y="197.0" class="tl-lab" text-anchor="start">User B clicks at 4 s, waits 3.1 s</text><line x1="144.0" x2="144.0" y1="201.0" y2="223.0" class="tl-click"/><rect x="144.0" y="206.0" width="98.1" height="12" rx="2" class="tl-b"/><text x="16.0" y="250.0" class="tl-title" text-anchor="start">Scoring in background R workers</text><text x="16.0" y="283.0" class="tl-lab" text-anchor="start">User A scores 1,000,000 rows: 9.3 s</text><rect x="16.0" y="290.0" width="297.6" height="16" rx="3" class="tl-a"/><text x="16.0" y="329.0" class="tl-lab" text-anchor="start">User B clicks at 0.5 s, waits 1.1 s</text><line x1="32.0" x2="32.0" y1="333.0" y2="355.0" class="tl-click"/><rect x="32.0" y="338.0" width="34.1" height="12" rx="2" class="tl-b"/><text x="16.0" y="371.0" class="tl-lab" text-anchor="start">User B clicks at 2 s, waits 57 ms</text><line x1="80.0" x2="80.0" y1="375.0" y2="397.0" class="tl-click"/><rect x="80.0" y="380.0" width="2.5" height="12" rx="2" class="tl-b"/><text x="16.0" y="413.0" class="tl-lab" text-anchor="start">User B clicks at 4 s, waits 66 ms</text><line x1="144.0" x2="144.0" y1="417.0" y2="439.0" class="tl-click"/><rect x="144.0" y="422.0" width="2.5" height="12" rx="2" class="tl-b"/><line x1="16.0" x2="336.0" y1="458.0" y2="458.0" class="tl-axis"/><line x1="16.0" x2="16.0" y1="458.0" y2="463.0" class="tl-axis"/><text x="16.0" y="476.0" class="tl-tick" text-anchor="middle">0 s</text><line x1="80.0" x2="80.0" y1="458.0" y2="463.0" class="tl-axis"/><text x="80.0" y="476.0" class="tl-tick" text-anchor="middle">2 s</text><line x1="144.0" x2="144.0" y1="458.0" y2="463.0" class="tl-axis"/><text x="144.0" y="476.0" class="tl-tick" text-anchor="middle">4 s</text><line x1="208.0" x2="208.0" y1="458.0" y2="463.0" class="tl-axis"/><text x="208.0" y="476.0" class="tl-tick" text-anchor="middle">6 s</text><line x1="272.0" x2="272.0" y1="458.0" y2="463.0" class="tl-axis"/><text x="272.0" y="476.0" class="tl-tick" text-anchor="middle">8 s</text><line x1="336.0" x2="336.0" y1="458.0" y2="463.0" class="tl-axis"/><text x="336.0" y="476.0" class="tl-tick" text-anchor="middle">10 s</text></svg>
+      <figcaption id="tl-cap">Two browser sessions on one app process; median of 3 runs at each click time. Async isn't free. For about the first second, R is still copying the 1,000,000-row batch to a worker, so a click at 0.5&nbsp;s still waited 1.1&nbsp;s. User A's own job took 9.3&nbsp;s instead of 7.3&nbsp;s.</figcaption>
+    </figure>
+  </section>
+
+  <section aria-labelledby="h-build">
+    <h2 id="h-build">What's in the build</h2>
+    <div class="prose">
+      <p>An R package, <code>churnscore</code>, built around a public telco churn dataset (7,043 customers). Each part is the kind of thing that breaks when a notebook model goes to production:</p>
+      <ul class="parts">
+        <li><strong>Validation before scoring.</strong> A column schema checks types, ranges, allowed values, blanks and duplicate IDs. It reports every problem in a batch at once, with the rows to fix.</li>
+        <li><strong>A model chosen by a rule written in advance.</strong> I compared elastic-net logistic regression (glmnet) with a random forest (ranger) using 5-fold cross-validation, with the preprocessing recipe refit inside each fold. The rule: take the highest mean AUC, and if the other model is within 0.005, take the faster one. glmnet won on AUC (0.842 vs 0.840). The forest was better calibrated (0.028 vs 0.036 expected calibration error), and I report that too.</li>
+        <li><strong>A versioned model bundle.</strong> It records the training data's SHA-256, the package versions and the hold-out metrics. <code>load_bundle()</code> refuses a model file whose checksum has changed and warns when an installed package version differs.</li>
+        <li><strong>Chunked batch scoring, and drift checks</strong> (population stability index) on every input column and on the scores.</li>
+        <li><strong>A plumber API and a Shiny app</strong> (bslib) that share the same functions, with scoring in background workers.</li>
+        <li><strong>28 tests, 133 expectations</strong>, including <code>shiny::testServer()</code> and an API test that compares every returned probability with <code>score_batch()</code>. <code>R CMD check</code>: OK.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section aria-labelledby="h-app">
+    <h2 id="h-app">The Shiny app</h2>
+    <p class="prose">Screenshots of the app running, taken by a script in the build.</p>
+    <div class="shots">
+      <figure><img src="img/validation.webp" width="1600" height="1025" loading="lazy" alt="Validation tab listing four issues: tenure out of range in rows 3, 40 and 77; an unseen internet service value 'Fibre optic' in rows 5 and 90; a blank monthly charge in row 150; a repeated customer ID in row 12.">
+        <figcaption>The batch with seven planted errors. All seven are found in one pass, grouped into four issues with the rows to fix. Scoring is refused until they are fixed.</figcaption></figure>
+      <figure><img src="img/drift.webp" width="1600" height="1025" loading="lazy" alt="Drift tab: bar chart of population stability index per column for a batch of first-year customers. Tenure is about 5.5 and total charges about 4, far past the 0.25 line; contract, payment method and the model score are also above 0.25.">
+        <figcaption>A batch of first-year customers, as after an acquisition campaign. Tenure's PSI is far past the 0.25 line for major drift.</figcaption></figure>
+      <figure><img src="img/scores.webp" width="1600" height="1025" loading="lazy" alt="Scores tab: histogram of predicted churn probability coloured by risk band, a download button and a table of the highest-risk customers.">
+        <figcaption>Scores for the same batch, with risk bands, the highest-risk customers and a CSV download.</figcaption></figure>
+      <figure><img src="img/model.webp" width="1600" height="1025" loading="lazy" alt="Model tab: a table with model version, engine, training size, creation time, the selection rule and hold-out metrics, beside a calibration plot of observed churn rate against mean predicted probability.">
+        <figcaption>The model card: version, selection rule, hold-out metrics and calibration.</figcaption></figure>
+    </div>
+  </section>
+
+  <section aria-labelledby="h-try">
+    <h2 id="h-try">Score a customer in your browser</h2>
+    <p class="prose">This is the production model, exported from R as 31 numbers (22 of the coefficients are non-zero after regularisation). On all 1,762 hold-out customers it gives the same probability as R to within 1.2&times;10<sup>&minus;15</sup>.</p>
+    <div class="scorer">
+      <form id="scorer-form" class="scorer-form" novalidate>
+        <fieldset>
+          <legend>Account</legend>
+          <div class="field"><label for="f-tenure">Tenure (months)</label><input id="f-tenure" name="tenure" type="number" min="0" max="120" step="1" inputmode="numeric"></div>
+          <div class="field"><label for="f-contract">Contract</label><select id="f-contract" name="contract"></select></div>
+          <div class="field"><label for="f-monthly_charges">Monthly charges ($)</label><input id="f-monthly_charges" name="monthly_charges" type="number" min="0" max="500" step="0.05" inputmode="decimal"></div>
+          <div class="field"><label for="f-total_charges">Total charges ($)</label><input id="f-total_charges" name="total_charges" type="number" min="0" max="100000" step="0.05" inputmode="decimal"><span class="hint" id="total-hint">Leave blank only when tenure is 0.</span></div>
+          <div class="field"><label for="f-payment_method">Payment method</label><select id="f-payment_method" name="payment_method"></select></div>
+          <div class="field check"><input id="f-paperless_billing" name="paperless_billing" type="checkbox"><label for="f-paperless_billing">Paperless billing</label></div>
+        </fieldset>
+        <fieldset>
+          <legend>Services</legend>
+          <div class="field"><label for="f-internet_service">Internet</label><select id="f-internet_service" name="internet_service"></select></div>
+          <div class="field check"><input id="f-phone_service" name="phone_service" type="checkbox"><label for="f-phone_service">Phone service</label></div>
+          <div class="field"><label for="f-multiple_lines">Multiple lines</label><select id="f-multiple_lines" name="multiple_lines"></select></div>
+          <div class="field"><label for="f-online_security">Online security</label><select id="f-online_security" name="online_security"></select></div>
+          <div class="field"><label for="f-online_backup">Online backup</label><select id="f-online_backup" name="online_backup"></select></div>
+          <div class="field"><label for="f-device_protection">Device protection</label><select id="f-device_protection" name="device_protection"></select></div>
+          <div class="field"><label for="f-tech_support">Tech support</label><select id="f-tech_support" name="tech_support"></select></div>
+          <div class="field"><label for="f-streaming_tv">Streaming TV</label><select id="f-streaming_tv" name="streaming_tv"></select></div>
+          <div class="field"><label for="f-streaming_movies">Streaming movies</label><select id="f-streaming_movies" name="streaming_movies"></select></div>
+        </fieldset>
+        <fieldset>
+          <legend>Household</legend>
+          <div class="field check"><input id="f-senior_citizen" name="senior_citizen" type="checkbox"><label for="f-senior_citizen">Senior citizen</label></div>
+          <div class="field check"><input id="f-partner" name="partner" type="checkbox"><label for="f-partner">Has a partner</label></div>
+          <div class="field check"><input id="f-dependents" name="dependents" type="checkbox"><label for="f-dependents">Has dependents</label></div>
+          <div class="field check"><input id="f-female" name="female" type="checkbox"><label for="f-female">Female</label></div>
+        </fieldset>
+      </form>
+      <div class="result" aria-live="polite">
+        <p class="result-label">Predicted churn probability</p>
+        <p class="result-prob" id="r-prob">&nbsp;</p>
+        <p class="result-band" id="r-band">&nbsp;</p>
+        <p class="result-error" id="r-error" hidden></p>
+        <h3 class="result-h">What moved it</h3>
+        <p class="result-note">Each term is the coefficient times how far this customer sits from the training average, so it shows the push up or down from an average customer.</p>
+        <ul class="drivers" id="r-drivers"></ul>
+        <noscript><p>The scorer needs JavaScript.</p></noscript>
+      </div>
+    </div>
+  </section>
+
+  <section aria-labelledby="h-caught">
+    <h2 id="h-caught">What the tests and measurements caught</h2>
+    <p class="prose">Every item below was a real bug in this build, found by a test or a measurement and fixed before the numbers on this page were taken.</p>
+    <ul class="caught">
+      <li><h3>The model only worked in the session that trained it</h3>
+        <p>glmnet's <code>predict()</code> method is registered only once the package is loaded. Training had loaded it. A fresh process that only reads the saved bundle, like the API or the app, failed with "no applicable method". The scoring function now loads the model's package itself.</p></li>
+      <li><h3>The API rounded every probability to 4 decimals</h3>
+        <p>plumber's JSON serializer defaults to four digits, so 0.4161102 came back as 0.4161. The API test compares each returned probability with <code>score_batch()</code> to 10<sup>&minus;12</sup>, and that caught it. Fixed with <code>digits = NA</code>.</p></li>
+      <li><h3>Malformed JSON got a 500 instead of a 400</h3>
+        <p>plumber parsed the body before the handler ran, and turned a parse failure into a generic server error. A pass-through parser now hands the raw body to the handler, which answers 400 with the expected format.</p></li>
+      <li><h3>A brand-new customer sent on their own was rejected</h3>
+        <p>JSON encoders drop null fields. A customer in their first month has no total charges yet, so the field vanished and validation reported a missing column. Columns that may be blank are now restored when every record omits them.</p></li>
+      <li><h3>A file with a churn label column warned on every chunk</h3>
+        <p>In a backtest file the label reached the preprocessing recipe as text. Only the schema's columns are passed on now.</p></li>
+      <li><h3>The first score after start-up took 1.9&nbsp;s for 500 rows</h3>
+        <p>The background workers were still loading packages. Spotted in a screenshot. The workers are now warmed when the app starts, and the same score takes 0.3&nbsp;s.</p></li>
+    </ul>
+  </section>
+
+  <section aria-labelledby="h-measured">
+    <h2 id="h-measured">Measured</h2>
+    <p class="prose">Run on a 2-core sandbox with R 4.3.3. <code>tools/run_all.sh</code> reruns everything below and rebuilds this page from the result files.</p>
+    <table class="measured">
+      <tbody>
+        <tr class="group"><th colspan="2" scope="colgroup">Code</th></tr>
+        <tr><th scope="row">Tests</th><td>28 tests, 133 expectations, 0 failing</td></tr>
+        <tr><th scope="row"><code>R CMD check</code></th><td>OK</td></tr>
+      </tbody>
+      <tbody>
+        <tr class="group"><th colspan="2" scope="colgroup">Model</th></tr>
+        <tr><th scope="row">5-fold CV AUC</th><td>glmnet 0.842, ranger 0.840</td></tr>
+        <tr><th scope="row">Hold-out AUC (1,762 customers)</th><td>glmnet 0.836 (in production), ranger 0.838</td></tr>
+        <tr><th scope="row">Hold-out Brier score</th><td>glmnet 0.140, ranger 0.138</td></tr>
+        <tr><th scope="row">Hold-out calibration error</th><td>glmnet 0.031, ranger 0.011</td></tr>
+        <tr><th scope="row">First-year customers (535)</th><td>AUC 0.769 vs 0.836 overall; churn rate 46%, mean prediction 42%</td></tr>
+      </tbody>
+      <tbody>
+        <tr class="group"><th colspan="2" scope="colgroup">Monitoring (200 batches of 300 hold-out customers each)</th></tr>
+        <tr><th scope="row">Drift alarms on random batches</th><td>0 major, 2 moderate</td></tr>
+        <tr><th scope="row">First-year customers flagged major</th><td>100%</td></tr>
+        <tr><th scope="row">Prices up 15% flagged major</th><td>100%</td></tr>
+        <tr><th scope="row">Fibre customers weighted 3&times;</th><td>53% major, 100% at least moderate</td></tr>
+        <tr><th scope="row">Validation, clean batches</th><td>200/200 passed</td></tr>
+        <tr><th scope="row">Validation, one planted fault each</th><td>200/200 reported the exact rule and nothing else</td></tr>
+      </tbody>
+      <tbody>
+        <tr class="group"><th colspan="2" scope="colgroup">Speed</th></tr>
+        <tr><th scope="row">Scoring 10,000 / 100,000 / 1,000,000 rows</th><td>0.09 s / 0.62 s / 7.3 s</td></tr>
+        <tr><th scope="row">The forest, same batches</th><td>1.2 s / 11.6 s (19&times; slower)</td></tr>
+        <tr><th scope="row">Peak extra memory, 1,000,000 rows</th><td>340 MB in 50,000-row chunks (7.0 s); 909 MB in one pass (10.8 s)</td></tr>
+        <tr><th scope="row">API, one customer (300 requests)</th><td>28 ms median, 69 ms 95th percentile</td></tr>
+        <tr><th scope="row">API, 1,000 customers (20 requests)</th><td>52 ms median</td></tr>
+        <tr><th scope="row">Another user's wait, clicking 0.5&nbsp;s into a 1,000,000-row score</th><td>7.1 s in-process; 1.1 s with workers</td></tr>
+        <tr><th scope="row">The same, clicking 2&nbsp;s or 4&nbsp;s in</th><td>5.1 s or 3.1 s in-process; 57 ms or 66 ms with workers</td></tr>
+        <tr><th scope="row">Browser scorer vs R</th><td>1,762 customers, largest difference 1.2&times;10<sup>&minus;15</sup></td></tr>
+      </tbody>
+    </table>
+
+    <h3 class="sub">Not measured</h3>
+    <ul class="prose not-measured">
+      <li>The data is a public telco churn dataset, not yours. The drifted batches are hold-out customers filtered or adjusted to imitate a campaign, a price rise and a fibre push.</li>
+      <li>The 10,000 to 1,000,000-row batches resample the hold-out customers, so they test speed and memory, not accuracy.</li>
+      <li>The concurrency test uses two users on one process. I did not load-test many users, or run several app processes behind a load balancer.</li>
+      <li>API latency was measured on the same machine, with no network in the path.</li>
+      <li>R packages came from Ubuntu's archive (the sandbox could not reach CRAN), so versions are a little older than current CRAN. The bundle records them, and <code>load_bundle()</code> warns when they differ.</li>
+      <li>The Dockerfile in the kit was not built here; the sandbox has no access to a container registry.</li>
+      <li>The validation faults come from a generator I wrote, so the result shows each rule works, not that every kind of bad data is caught.</li>
+    </ul>
+  </section>
+</main>
+
+<footer class="wrap foot">
+  <p>Prepared by Santiago. Data: IBM's telco churn sample, as shipped in the <code>modeldata</code> R package. Model churn-glmnet-23e287b5, bundle 151&nbsp;KB.</p>
+</footer>
+<script type="module" src="js/app.mjs"></script>
+</body>
+</html>

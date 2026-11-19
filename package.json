@@ -1,0 +1,9 @@
+{
+  "name": "churn-scoring-in-r-demo",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Static demo page for an R / Shiny / plumber churn-scoring build. No build step.",
+  "scripts": {
+    "serve": "npx --yes serve ."
+  }
+}
